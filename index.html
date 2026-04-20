@@ -4,146 +4,317 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CromCalc 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #FF6B00; --bg: #F8F9FA; --text: #1A1A1A; }
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 500px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); margin: 0 0 5px 0; font-size: 28px; text-align: center; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: #555; }
+        /* ============================================
+           CromCalc 2026 — Industrial Dark Theme
+           ============================================ */
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f1017;
+            --bg-card: #14151d;
+            --bg-input: #0c0d14;
+            --border-color: #1e2030;
+            --accent: #FF6B00;
+            --accent-light: #FF9500;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8a8b9e;
+            --text-muted: #555670;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow: 0 0 30px rgba(255, 107, 0, 0.2);
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            padding: 16px 20px;
+            background: linear-gradient(180deg, rgba(255,107,0,0.08) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .header-content { display: flex; align-items: center; justify-content: space-between; }
+
+        .logo-section { display: flex; align-items: center; gap: 10px; }
+
+        .logo-icon svg { width: 36px; height: 36px; }
+
+        .logo-text h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .logo-year { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        .header-subtitle { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; }
+
+        .main-content { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+        .section-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; }
+
+        .input-section, .service-section, .results-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+
+        .input-group label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+
+        .input-symbol { font-size: 1rem; font-weight: 700; color: var(--accent); font-family: var(--font-mono); width: 20px; text-align: center; }
+
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        input { width: 100%; padding: 15px; border: 2px solid #EEE; border-radius: 12px; font-size: 18px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
-        .input-unit { position: absolute; right: 15px; color: #999; font-weight: 600; }
-        .quick-select { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .quick-select button { background: #F0F0F0; border: none; padding: 10px; border-radius: 8px; font-weight: 600; color: #555; cursor: pointer; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
-        .quick-select button:active { background: #DDD; transform: scale(0.95); }
-        .service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
-        .service-btn { background: white; border: 2px solid #EEE; padding: 15px 10px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .service-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-        .results-section { background: #FDF2E9; padding: 20px; border-radius: 15px; margin-top: 20px; }
-        .info-card { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #666; }
-        .info-value { font-weight: 700; color: var(--text); }
-        .price-display { text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #CCC; }
-        .price-label { font-size: 12px; font-weight: 800; color: #999; letter-spacing: 1px; }
-        .price-value-wrapper { font-size: 36px; font-weight: 900; color: var(--text); margin: 5px 0; }
-        .clear-btn { width: 100%; padding: 15px; margin-top: 20px; border: none; border-radius: 12px; background: #333; color: white; font-weight: 700; cursor: pointer; }
+
+        .input-wrapper input {
+            width: 100%;
+            height: 52px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 0 50px 0 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .input-wrapper input:focus { border-color: var(--accent); box-shadow: var(--shadow-glow); }
+
+        .input-unit { position: absolute; right: 14px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); pointer-events: none; }
+
+        .quick-select { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+        .quick-select button {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quick-select button:active { background: var(--accent); color: #fff; }
+
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+        .service-btn {
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            padding: 14px 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .service-btn.active {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255,107,0,0.1);
+        }
+
+        .info-results { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+
+        .info-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .info-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+
+        .info-value { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: #fff; }
+
+        .price-display {
+            background: linear-gradient(135deg, rgba(255,107,0,0.1) 0%, rgba(255,149,0,0.05) 100%);
+            border: 2px solid rgba(255,107,0,0.3);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .price-label { font-size: 0.7rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+
+        .price-value-wrapper {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 4px 0;
+        }
+
+        .price-currency { font-size: 1.2rem; color: var(--accent); }
+
+        .price-service-label { font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); }
+
+        .clear-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <h1>CromCalc <small style="font-size:12px; vertical-align:middle; opacity:0.6">2026</small></h1>
-
-        <div class="input-group">
-            <label>Ø Diâmetro (mm)</label>
-            <div class="input-wrapper">
-                <input type="number" id="diametro" inputmode="decimal" placeholder="0">
-                <span class="input-unit">mm</span>
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 40 40">
+                            <circle cx="20" cy="20" r="18" stroke="#FF6B00" stroke-width="3" fill="none"/>
+                            <circle cx="20" cy="20" r="10" stroke="#FF6B00" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>CromCalc</h1>
+                        <span class="logo-year">2026</span>
+                    </div>
+                </div>
+                <span class="header-subtitle">Megaflex</span>
             </div>
-            <div class="quick-select">
-                <button type="button" onclick="setMedida('diametro', 10)">10</button>
-                <button type="button" onclick="setMedida('diametro', 20)">20</button>
-                <button type="button" onclick="setMedida('diametro', 30)">30</button>
-                <button type="button" onclick="setMedida('diametro', 40)">40</button>
-                <button type="button" onclick="setMedida('diametro', 50)">50</button>
-                <button type="button" onclick="setMedida('diametro', 60)">60</button>
-                <button type="button" onclick="setMedida('diametro', 80)">80</button>
-                <button type="button" onclick="setMedida('diametro', 100)">100</button>
-            </div>
-        </div>
+        </header>
 
-        <div class="input-group">
-            <label>ℓ Comprimento (mm)</label>
-            <div class="input-wrapper">
-                <input type="number" id="comprimento" inputmode="decimal" placeholder="0">
-                <span class="input-unit">mm</span>
-            </div>
-            <div class="quick-select">
-                <button type="button" onclick="setMedida('comprimento', 100)">100</button>
-                <button type="button" onclick="setMedida('comprimento', 200)">200</button>
-                <button type="button" onclick="setMedida('comprimento', 300)">300</button>
-                <button type="button" onclick="setMedida('comprimento', 500)">500</button>
-                <button type="button" onclick="setMedida('comprimento', 750)">750</button>
-                <button type="button" onclick="setMedida('comprimento', 1000)">1000</button>
-                <button type="button" onclick="setMedida('comprimento', 1500)">1500</button>
-                <button type="button" onclick="setMedida('comprimento', 2000)">2000</button>
-            </div>
-        </div>
+        <main class="main-content">
+            <section class="input-section">
+                <div class="section-label">📐 Dimensões</div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label><span class="input-symbol">Ø</span> Diâmetro</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="diam" placeholder="0" oninput="calc()">
+                            <span class="input-unit">mm</span>
+                        </div>
+                        <div class="quick-select">
+                            <button onclick="setM('diam', 10)">10</button>
+                            <button onclick="setM('diam', 30)">30</button>
+                            <button onclick="setM('diam', 50)">50</button>
+                            <button onclick="setM('diam', 100)">100</button>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-top:15px">
+                        <label><span class="input-symbol">ℓ</span> Comprimento</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="comp" placeholder="0" oninput="calc()">
+                            <span class="input-unit">mm</span>
+                        </div>
+                        <div class="quick-select">
+                            <button onclick="setM('comp', 100)">100</button>
+                            <button onclick="setM('comp', 500)">500</button>
+                            <button onclick="setM('comp', 1000)">1000</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <div class="service-grid">
-            <button class="service-btn active" id="btn-cromoCamada" onclick="setServico('cromoCamada')">Cromo Camada</button>
-            <button class="service-btn" id="btn-cromagemCliente" onclick="setServico('cromagemCliente')">Cromagem Cliente</button>
-            <button class="service-btn" id="btn-retifica" onclick="setServico('retifica')">Retífica</button>
-            <button class="service-btn" id="btn-mecanico" onclick="setServico('mecanico')">Mecânico</button>
-        </div>
+            <section class="service-section">
+                <div class="service-grid">
+                    <button class="service-btn active" id="s1" onclick="setS('s1','Cromo Camada')">Cromo Camada</button>
+                    <button class="service-btn" id="s2" onclick="setS('s2','Cromagem Cliente')">Cromagem Cliente</button>
+                    <button class="service-btn" id="s3" onclick="setS('s3','Retífica')">Retífica</button>
+                    <button class="service-btn" id="s4" onclick="setS('s4','Mecânico')">Mecânico</button>
+                </div>
+            </section>
 
-        <div class="results-section">
-            <div class="info-card"><span>Área:</span><span id="res-area">—</span></div>
-            <div class="info-card"><span>Faixa:</span><span id="res-faixa">—</span></div>
-            <div class="info-card"><span>Valor Base:</span><span id="res-base">—</span></div>
-            <div class="price-display">
-                <div class="price-label">PREÇO ESTIMADO</div>
-                <div class="price-value-wrapper">R$ <span id="res-total">0,00</span></div>
-                <div id="res-servico-nome" style="font-size:12px; color:var(--primary); font-weight:700">Cromo Camada</div>
-            </div>
-        </div>
+            <section class="results-section">
+                <div class="info-results">
+                    <div class="info-card"><span class="info-label">Área</span><span class="info-value" id="res-a">—</span></div>
+                    <div class="info-card"><span class="info-label">Faixa</span><span class="info-value" id="res-f">—</span></div>
+                </div>
+                <div class="price-display">
+                    <span class="price-label">PREÇO FINAL</span>
+                    <div class="price-value-wrapper"><span class="price-currency">R$</span> <span id="res-p">0,00</span></div>
+                    <span id="res-s" style="font-size: 0.8rem; color: var(--text-secondary);">Cromo Camada</span>
+                </div>
+            </section>
 
-        <button class="clear-btn" onclick="limpar()">Limpar Tudo</button>
+            <button class="clear-btn" onclick="location.reload()">Limpar Tudo</button>
+        </main>
     </div>
 
     <script>
-        const SERVICOS = {
-            cromoCamada: { n: 'Cromo Camada', c: (vb) => vb * 2 },
-            cromagemCliente: { n: 'Cromagem Cliente', c: (vb) => vb / 0.85 },
-            retifica: { n: 'Retífica', c: (vb) => vb * 0.588 },
-            mecanico: { n: 'Mecânico', c: (vb) => vb }
-        };
+        let s = 's1';
+        const t = { s1: v => v * 2, s2: v => v / 0.85, s3: v => v * 0.588, s4: v => v };
 
-        let state = { diametro: 0, comprimento: 0, servico: 'cromoCamada' };
+        function calc() {
+            const d = parseFloat(document.getElementById('diam').value) || 0;
+            const l = parseFloat(document.getElementById('comp').value) || 0;
+            const a = (Math.PI * d * l) / 10000;
 
-        function setMedida(id, val) {
-            document.getElementById(id).value = val;
-            atualizar();
+            let f = 18.2, k = 300, n = 'F5';
+            if (d > 50) { f = 32.1; k = 0; n = 'F1'; }
+            else if (d > 25) { f = 27.3; k = 35; n = 'F2'; }
+            else if (d > 15) { f = 24.1; k = 61; n = 'F3'; }
+            else if (d > 10) { f = 21.5; k = 125; n = 'F4'; }
+
+            const b = a > 0 ? (a * f) + k : 0;
+            const total = t[s](b);
+
+            document.getElementById('res-a').innerText = a > 0 ? a.toFixed(4) : '—';
+            document.getElementById('res-f').innerText = a > 0 ? n : '—';
+            document.getElementById('res-p').innerText = a > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00';
         }
 
-        function setServico(s) {
-            state.servico = s;
+        function setM(id, v) { document.getElementById(id).value = v; calc(); }
+        function setS(id, txt) {
+            s = id;
             document.querySelectorAll('.service-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + s).classList.add('active');
-            atualizar();
+            document.getElementById(id).classList.add('active');
+            document.getElementById('res-s').innerText = txt;
+            calc();
         }
-
-        function atualizar() {
-            state.diametro = parseFloat(document.getElementById('diametro').value) || 0;
-            state.comprimento = parseFloat(document.getElementById('comprimento').value) || 0;
-
-            const area = (Math.PI * state.diametro * state.comprimento) / 10000;
-            let f = 18.2, k = 300, n = 'Faixa 5 (≤10)';
-
-            if (state.diametro > 50) { f = 32.1; k = 0; n = 'Faixa 1 (>50)'; }
-            else if (state.diametro > 25) { f = 27.3; k = 35; n = 'Faixa 2 (26-50)'; }
-            else if (state.diametro > 15) { f = 24.1; k = 61; n = 'Faixa 3 (16-25)'; }
-            else if (state.diametro > 10) { f = 21.5; k = 125; n = 'Faixa 4 (11-15)'; }
-
-            const vb = area > 0 ? (area * f) + k : 0;
-            const total = SERVICOS[state.servico].c(vb);
-
-            document.getElementById('res-area').textContent = area > 0 ? area.toLocaleString('pt-BR', {minimumFractionDigits: 4}) + ' dcm²' : '—';
-            document.getElementById('res-faixa').textContent = area > 0 ? n : '—';
-            document.getElementById('res-base').textContent = area > 0 ? 'R$ ' + vb.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '—';
-            document.getElementById('res-total').textContent = area > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00';
-            document.getElementById('res-servico-nome').textContent = SERVICOS[state.servico].n;
-        }
-
-        function limpar() {
-            document.getElementById('diametro').value = '';
-            document.getElementById('comprimento').value = '';
-            atualizar();
-        }
-
-        document.getElementById('diametro').addEventListener('input', atualizar);
-        document.getElementById('comprimento').addEventListener('input', atualizar);
     </script>
 </body>
 </html>
