@@ -61,7 +61,8 @@
 
         .logo-section { display: flex; align-items: center; gap: 10px; }
 
-        .logo-icon svg { width: 36px; height: 36px; }
+        .logo-icon svg { width: 36px; height: 36px; animation: logo-spin 10s linear infinite; }
+        @keyframes logo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .logo-text h1 {
             font-size: 1.35rem;
@@ -304,7 +305,7 @@
 
             document.getElementById('res-a').innerText = a > 0 ? a.toFixed(4) : '—';
             document.getElementById('res-f').innerText = a > 0 ? n : '—';
-            document.getElementById('res-p').innerText = a > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00';
+            document.getElementById('res-p').innerText = a > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0,00';
         }
 
         function setM(id, v) { document.getElementById(id).value = v; calc(); }
