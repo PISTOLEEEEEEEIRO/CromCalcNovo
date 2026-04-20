@@ -294,8 +294,8 @@
 
             <section class="results-section">
                 <div class="info-results">
-                    <div class="info-card"><span class="info-label">Área</span><span class="info-value" id="res-a">—</span></div>
-                    <div class="info-card"><span class="info-label">Faixa</span><span class="info-value" id="res-f">—</span></div>
+                    <div class="info-card"><span class="info-label">Área (dm²)</span><span class="info-value" id="res-a">—</span></div>
+                    <div class="info-card"><span class="info-label">Peso (Kg)</span><span class="info-value" id="res-w">—</span></div>
                 </div>
                 <div class="price-display">
                     <span class="price-label">PREÇO FINAL</span>
@@ -315,19 +315,24 @@
         function calc() {
             const d = parseFloat(document.getElementById('diam').value) || 0;
             const l = parseFloat(document.getElementById('comp').value) || 0;
+
+            // Cálculo de Área (dm²)
             const a = (Math.PI * d * l) / 10000;
 
-            let f = 18.2, k = 300, n = 'F5';
-            if (d > 50) { f = 32.1; k = 0; n = 'F1'; }
-            else if (d > 25) { f = 27.3; k = 35; n = 'F2'; }
-            else if (d > 15) { f = 24.1; k = 61; n = 'F3'; }
-            else if (d > 10) { f = 21.5; k = 125; n = 'F4'; }
+            // Cálculo de Peso (Kg) - Considerando densidade do aço ~7.87
+            const w = (Math.PI * Math.pow(d/2, 2) * l * 7.87) / 1000000;
+
+            let f = 18.2, k = 300;
+            if (d > 50) { f = 32.1; k = 0; }
+            else if (d > 25) { f = 27.3; k = 35; }
+            else if (d > 15) { f = 24.1; k = 61; }
+            else if (d > 10) { f = 21.5; k = 125; }
 
             const b = a > 0 ? (a * f) + k : 0;
             const total = t[s](b);
 
-            document.getElementById('res-a').innerText = a > 0 ? a.toFixed(4) : '—';
-            document.getElementById('res-f').innerText = a > 0 ? n : '—';
+            document.getElementById('res-a').innerText = a > 0 ? a.toFixed(2) : '—';
+            document.getElementById('res-w').innerText = a > 0 ? w.toFixed(2) : '—';
             document.getElementById('res-p').innerText = a > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0,00';
         }
 
