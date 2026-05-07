@@ -103,6 +103,7 @@ body {
     width: 56px;
     height: 56px;
     object-fit: contain;
+    mix-blend-mode: screen;
 }
 
 .logo-text h1 {
