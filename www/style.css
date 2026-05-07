@@ -127,10 +127,20 @@ body {
 
 .header-subtitle {
     font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.5px;
+    font-weight: 700;
+    letter-spacing: 3px;
     text-transform: uppercase;
+    background: linear-gradient(90deg, #555670 0%, #FF6B00 40%, #FF9500 60%, #555670 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
 }
 
 /* ============================================
