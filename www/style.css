@@ -99,15 +99,10 @@ body {
     gap: 10px;
 }
 
-.logo-icon svg {
+.logo-icon img {
     width: 36px;
     height: 36px;
-    animation: logo-spin 20s linear infinite;
-}
-
-@keyframes logo-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    object-fit: contain;
 }
 
 .logo-text h1 {
