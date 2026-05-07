@@ -75,8 +75,7 @@
 
         .logo-section { display: flex; align-items: center; gap: 10px; }
 
-        .logo-icon svg { width: 36px; height: 36px; animation: logo-spin 10s linear infinite; }
-        @keyframes logo-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .logo-icon img { width: 36px; height: 36px; object-fit: contain; }
 
         .logo-text h1 {
             font-size: 1.35rem;
@@ -228,10 +227,7 @@
             <div class="header-content">
                 <div class="logo-section">
                     <div class="logo-icon">
-                        <svg viewBox="0 0 40 40">
-                            <circle cx="20" cy="20" r="18" stroke="#FF6B00" stroke-width="3" fill="none"/>
-                            <circle cx="20" cy="20" r="10" stroke="#FF6B00" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
-                        </svg>
+                        <img src="www/megaflex-logo.png.jpeg" alt="Megaflex" style="width:36px;height:36px;object-fit:contain;border-radius:4px;">
                     </div>
                     <div class="logo-text">
                         <h1>CromCalc</h1>
