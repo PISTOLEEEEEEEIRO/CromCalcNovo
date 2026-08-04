@@ -173,9 +173,19 @@ body {
     font-size: 0.85rem;
 }
 
+.input-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.input-group-header label {
+    margin-bottom: 0;
+}
+
 .unit-toggle {
     display: flex;
-    margin-left: auto;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     overflow: hidden;
