@@ -173,6 +173,37 @@ body {
     font-size: 0.85rem;
 }
 
+.unit-toggle {
+    display: flex;
+    margin-left: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.unit-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.5px;
+}
+
+.unit-btn.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.unit-btn:not(.active):hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+
 /* ============================================
    Input Section
    ============================================ */

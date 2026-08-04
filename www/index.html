@@ -26,7 +26,13 @@
 
         <main class="main-content">
             <section class="input-section">
-                <div class="section-label">📐 Dimensões da Peça</div>
+                <div class="section-label">
+                    📐 Dimensões da Peça
+                    <div class="unit-toggle">
+                        <button id="btn-unit-mm"  class="unit-btn active" onclick="setUnidade('mm')">mm</button>
+                        <button id="btn-unit-pol" class="unit-btn"        onclick="setUnidade('pol')">pol</button>
+                    </div>
+                </div>
                 <div class="input-grid">
                     <div class="input-group">
                         <label><span class="input-symbol">Ø</span> Diâmetro</label>
@@ -34,16 +40,7 @@
                             <input type="number" id="diametro" inputmode="decimal" placeholder="0">
                             <span class="input-unit">mm</span>
                         </div>
-                        <div class="quick-select">
-                            <button type="button" onclick="setMedida('diametro', 10)">10</button>
-                            <button type="button" onclick="setMedida('diametro', 20)">20</button>
-                            <button type="button" onclick="setMedida('diametro', 30)">30</button>
-                            <button type="button" onclick="setMedida('diametro', 40)">40</button>
-                            <button type="button" onclick="setMedida('diametro', 50)">50</button>
-                            <button type="button" onclick="setMedida('diametro', 60)">60</button>
-                            <button type="button" onclick="setMedida('diametro', 80)">80</button>
-                            <button type="button" onclick="setMedida('diametro', 100)">100</button>
-                        </div>
+                        <div class="quick-select" id="qs-diametro"></div>
                     </div>
                     <div class="input-group">
                         <label><span class="input-symbol">ℓ</span> Comprimento</label>
@@ -51,14 +48,7 @@
                             <input type="number" id="comprimento" inputmode="decimal" placeholder="0">
                             <span class="input-unit">mm</span>
                         </div>
-                        <div class="quick-select">
-                            <button type="button" onclick="setMedida('comprimento', 100)">100</button>
-                            <button type="button" onclick="setMedida('comprimento', 200)">200</button>
-                            <button type="button" onclick="setMedida('comprimento', 300)">300</button>
-                            <button type="button" onclick="setMedida('comprimento', 500)">500</button>
-                            <button type="button" onclick="setMedida('comprimento', 1000)">1000</button>
-                            <button type="button" onclick="setMedida('comprimento', 2000)">2000</button>
-                        </div>
+                        <div class="quick-select" id="qs-comprimento"></div>
                     </div>
                 </div>
             </section>
