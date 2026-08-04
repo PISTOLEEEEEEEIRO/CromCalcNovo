@@ -1,26 +1,24 @@
-const CACHE_NAME = 'cromcalc-v6';
+const CACHE_NAME = 'cromcalc-v7';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
     './app.js',
     './manifest.json',
-    './icon-192.png',
-    './icon-512.png',
     './megaflex-logo.png.jpeg'
 ];
 
-// Install — cache assets
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
-            return cache.addAll(ASSETS);
+            return cache.addAll(ASSETS.map(function(a) {
+                return new Request(a, { cache: 'no-store' });
+            }));
         })
     );
     self.skipWaiting();
 });
 
-// Activate — remove old caches and take control immediately
 self.addEventListener('activate', function(event) {
     event.waitUntil(
         caches.keys().then(function(keys) {
@@ -30,14 +28,17 @@ self.addEventListener('activate', function(event) {
             );
         }).then(function() {
             return self.clients.claim();
+        }).then(function() {
+            return self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+        }).then(function(clients) {
+            clients.forEach(function(client) { client.navigate(client.url); });
         })
     );
 });
 
-// Fetch — NETWORK FIRST, cache as fallback (offline only)
 self.addEventListener('fetch', function(event) {
     event.respondWith(
-        fetch(event.request).then(function(response) {
+        fetch(event.request, { cache: 'no-store' }).then(function(response) {
             if (response.status === 200) {
                 var clone = response.clone();
                 caches.open(CACHE_NAME).then(function(cache) {
