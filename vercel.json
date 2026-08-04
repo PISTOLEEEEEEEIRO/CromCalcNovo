@@ -1,14 +1,13 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/www/$1" }
+    { "source": "/:path*", "destination": "/www/:path*" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
       ]
     }
   ]

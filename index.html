@@ -258,21 +258,18 @@
                 <div class="section-label">📐 Dimensões</div>
                 <div class="input-grid">
                     <div class="input-group">
-                        <label><span class="input-symbol">Ø</span> Diâmetro</label>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                            <label style="margin-bottom:0"><span class="input-symbol">Ø</span> Diâmetro</label>
+                            <div style="display:flex;border:1px solid #1e2030;border-radius:6px;overflow:hidden;">
+                                <button id="btn-mm"  onclick="setUnit('mm')"  style="background:#FF6B00;color:#fff;border:none;font-size:0.7rem;font-weight:700;padding:3px 10px;cursor:pointer;font-family:monospace;">mm</button>
+                                <button id="btn-pol" onclick="setUnit('pol')" style="background:transparent;color:#555670;border:none;font-size:0.7rem;font-weight:700;padding:3px 10px;cursor:pointer;font-family:monospace;">pol</button>
+                            </div>
+                        </div>
                         <div class="input-wrapper">
-                            <input type="number" id="diam" placeholder="0" oninput="calc()">
-                            <span class="input-unit">mm</span>
+                            <input type="text" inputmode="decimal" id="diam" placeholder="0" oninput="calc()">
+                            <span class="input-unit" id="unit-lbl">mm</span>
                         </div>
-                        <div class="quick-select">
-                            <button onclick="setM('diam', 10)">10</button>
-                            <button onclick="setM('diam', 20)">20</button>
-                            <button onclick="setM('diam', 30)">30</button>
-                            <button onclick="setM('diam', 40)">40</button>
-                            <button onclick="setM('diam', 50)">50</button>
-                            <button onclick="setM('diam', 60)">60</button>
-                            <button onclick="setM('diam', 80)">80</button>
-                            <button onclick="setM('diam', 100)">100</button>
-                        </div>
+                        <div class="quick-select" id="qs-diam"></div>
                     </div>
                     <div class="input-group" style="margin-top:15px">
                         <label><span class="input-symbol">ℓ</span> Comprimento</label>
@@ -320,41 +317,56 @@
     </div>
 
     <script>
-        let s = 's1';
-        const t = { s1: v => v * 2, s2: v => v / 0.85, s3: v => v * 0.588, s4: v => v };
+        var s = 's1';
+        var unit = 'mm';
+        var MM_POL = 25.4;
+        var QS_MM  = [10, 20, 30, 40, 50, 60, 80, 100];
+        var QS_POL = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3];
+        var t = { s1: function(v){return v*2;}, s2: function(v){return v/0.85;}, s3: function(v){return v*0.588;}, s4: function(v){return v;} };
+
+        function parseD(raw) {
+            return parseFloat(String(raw).replace(/["""''']/g,'').replace(',','.')) || 0;
+        }
 
         function calc() {
-            const d = parseFloat(document.getElementById('diam').value) || 0;
-            const l = parseFloat(document.getElementById('comp').value) || 0;
+            var dRaw = parseD(document.getElementById('diam').value);
+            var dMM  = unit === 'pol' ? dRaw * MM_POL : dRaw;
+            var l    = parseFloat(document.getElementById('comp').value) || 0;
+            var a    = dMM > 0 && l > 0 ? (Math.PI * dMM * l) / 10000 : 0;
+            var w    = dMM > 0 && l > 0 ? (Math.PI * Math.pow(dMM/2,2) * l * 7.87) / 1000000 : 0;
+            var f=18.2, k=300;
+            if (dMM > 50){f=32.1;k=0;} else if (dMM>25){f=27.3;k=35;} else if (dMM>15){f=24.1;k=61;} else if (dMM>10){f=21.5;k=125;}
+            var b = a > 0 ? (a*f)+k : 0;
+            document.getElementById('res-a').innerText = a>0 ? a.toFixed(2) : '—';
+            document.getElementById('res-w').innerText = a>0 ? w.toFixed(2) : '—';
+            document.getElementById('res-p').innerText = a>0 ? t[s](b).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '0,00';
+        }
 
-            // Cálculo de Área (dm²)
-            const a = (Math.PI * d * l) / 10000;
-
-            // Cálculo de Peso (Kg) - Considerando densidade do aço ~7.87
-            const w = (Math.PI * Math.pow(d/2, 2) * l * 7.87) / 1000000;
-
-            let f = 18.2, k = 300;
-            if (d > 50) { f = 32.1; k = 0; }
-            else if (d > 25) { f = 27.3; k = 35; }
-            else if (d > 15) { f = 24.1; k = 61; }
-            else if (d > 10) { f = 21.5; k = 125; }
-
-            const b = a > 0 ? (a * f) + k : 0;
-            const total = t[s](b);
-
-            document.getElementById('res-a').innerText = a > 0 ? a.toFixed(2) : '—';
-            document.getElementById('res-w').innerText = a > 0 ? w.toFixed(2) : '—';
-            document.getElementById('res-p').innerText = a > 0 ? total.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0,00';
+        function setUnit(u) {
+            var el = document.getElementById('diam');
+            var v  = parseD(el.value);
+            if (v) el.value = u==='pol' ? (v/MM_POL).toFixed(3).replace(/\.?0+$/,'') : (v*MM_POL).toFixed(1).replace(/\.0$/,'');
+            unit = u;
+            document.getElementById('unit-lbl').innerText = u;
+            document.getElementById('btn-mm').style.background  = u==='mm'  ? '#FF6B00' : 'transparent';
+            document.getElementById('btn-mm').style.color        = u==='mm'  ? '#fff'    : '#555670';
+            document.getElementById('btn-pol').style.background  = u==='pol' ? '#FF6B00' : 'transparent';
+            document.getElementById('btn-pol').style.color       = u==='pol' ? '#fff'    : '#555670';
+            var qs = u==='pol' ? QS_POL : QS_MM;
+            document.getElementById('qs-diam').innerHTML = qs.map(function(v){return '<button onclick="setM(\'diam\','+v+')">'+v+'</button>';}).join('');
+            calc();
         }
 
         function setM(id, v) { document.getElementById(id).value = v; calc(); }
         function setS(id, txt) {
             s = id;
-            document.querySelectorAll('.service-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.service-btn').forEach(function(b){b.classList.remove('active');});
             document.getElementById(id).classList.add('active');
             document.getElementById('res-s').innerText = txt;
             calc();
         }
+
+        window.onload = function() { setUnit('mm'); };
     </script>
 </body>
 </html>
