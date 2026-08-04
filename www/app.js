@@ -19,7 +19,14 @@ var state = {
 };
 
 function parseValor(raw) {
-    return parseFloat(raw.replace(/["“”‘’']/g, '').replace(',', '.').trim()) || 0;
+    var s = raw.replace(/[“””’’’]/g, ‘’).replace(‘,’, ‘.’).trim();
+    // Formato fracionario: “2.1/2” ou “1.3/4” (inteiro + fracao)
+    var mFrac = s.match(/^(\d+)\.(\d+)\/(\d+)$/);
+    if (mFrac) return parseInt(mFrac[1]) + parseInt(mFrac[2]) / parseInt(mFrac[3]);
+    // Fracao pura: “1/2” ou “3/4”
+    var mPure = s.match(/^(\d+)\/(\d+)$/);
+    if (mPure) return parseInt(mPure[1]) / parseInt(mPure[2]);
+    return parseFloat(s) || 0;
 }
 
 function calcularArea(d, l) {

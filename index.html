@@ -325,7 +325,12 @@
         var t = { s1: function(v){return v*2;}, s2: function(v){return v/0.85;}, s3: function(v){return v*0.588;}, s4: function(v){return v;} };
 
         function parseD(raw) {
-            return parseFloat(String(raw).replace(/["""''']/g,'').replace(',','.')) || 0;
+            var s = String(raw).replace(/["""''']/g,'').replace(',','.').trim();
+            var mFrac = s.match(/^(\d+)\.(\d+)\/(\d+)$/);
+            if (mFrac) return parseInt(mFrac[1]) + parseInt(mFrac[2]) / parseInt(mFrac[3]);
+            var mPure = s.match(/^(\d+)\/(\d+)$/);
+            if (mPure) return parseInt(mPure[1]) / parseInt(mPure[2]);
+            return parseFloat(s) || 0;
         }
 
         function calc() {
