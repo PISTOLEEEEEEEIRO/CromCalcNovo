@@ -265,10 +265,38 @@
                                 <button id="btn-pol" onclick="setUnit('pol')" style="background:transparent;color:#555670;border:none;font-size:0.7rem;font-weight:700;padding:3px 10px;cursor:pointer;font-family:monospace;">pol</button>
                             </div>
                         </div>
-                        <div class="input-wrapper">
+                        <div class="input-wrapper" id="diam-mm-wrapper">
                             <input type="text" inputmode="decimal" id="diam" placeholder="0" oninput="calc()">
-                            <span class="input-unit" id="unit-lbl">mm</span>
+                            <span class="input-unit">mm</span>
                         </div>
+                        <select id="diam-pol" style="display:none;width:100%;height:52px;background:#0c0d14;border:2px solid #1e2030;border-radius:12px;color:#f0f0f5;font-family:monospace;font-size:1.1rem;font-weight:600;padding:0 14px;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;">
+                            <option value="">-- Selecione --</option>
+                            <option value="0.25">1/4"</option>
+                            <option value="0.375">3/8"</option>
+                            <option value="0.5">1/2"</option>
+                            <option value="0.625">5/8"</option>
+                            <option value="0.75">3/4"</option>
+                            <option value="0.875">7/8"</option>
+                            <option value="1">1"</option>
+                            <option value="1.25">1.1/4"</option>
+                            <option value="1.5">1.1/2"</option>
+                            <option value="1.75">1.3/4"</option>
+                            <option value="2">2"</option>
+                            <option value="2.25">2.1/4"</option>
+                            <option value="2.5">2.1/2"</option>
+                            <option value="2.75">2.3/4"</option>
+                            <option value="3">3"</option>
+                            <option value="3.5">3.1/2"</option>
+                            <option value="4">4"</option>
+                            <option value="4.5">4.1/2"</option>
+                            <option value="5">5"</option>
+                            <option value="5.5">5.1/2"</option>
+                            <option value="6">6"</option>
+                            <option value="7">7"</option>
+                            <option value="8">8"</option>
+                            <option value="10">10"</option>
+                            <option value="12">12"</option>
+                        </select>
                         <div class="quick-select" id="qs-diam"></div>
                     </div>
                     <div class="input-group" style="margin-top:15px">
@@ -334,7 +362,9 @@
         }
 
         function calc() {
-            var dRaw = parseD(document.getElementById('diam').value);
+            var dRaw = unit === 'pol'
+                ? parseD(document.getElementById('diam-pol').value)
+                : parseD(document.getElementById('diam').value);
             var dMM  = unit === 'pol' ? dRaw * MM_POL : dRaw;
             var l    = parseFloat(document.getElementById('comp').value) || 0;
             var a    = dMM > 0 && l > 0 ? (Math.PI * dMM * l) / 10000 : 0;
@@ -348,17 +378,25 @@
         }
 
         function setUnit(u) {
-            var el = document.getElementById('diam');
-            var v  = parseD(el.value);
-            if (v) el.value = u==='pol' ? (v/MM_POL).toFixed(3).replace(/\.?0+$/,'') : (v*MM_POL).toFixed(1).replace(/\.0$/,'');
             unit = u;
-            document.getElementById('unit-lbl').innerText = u;
+            var wrapper = document.getElementById('diam-mm-wrapper');
+            var sel     = document.getElementById('diam-pol');
+            var qs      = document.getElementById('qs-diam');
+            if (u === 'pol') {
+                wrapper.style.display = 'none';
+                sel.style.display     = 'block';
+                qs.style.display      = 'none';
+            } else {
+                wrapper.style.display = 'flex';
+                sel.style.display     = 'none';
+                sel.value             = '';
+                qs.style.display      = '';
+                qs.innerHTML = QS_MM.map(function(v){return '<button onclick="setM(\'diam\','+v+')">'+v+'</button>';}).join('');
+            }
             document.getElementById('btn-mm').style.background  = u==='mm'  ? '#FF6B00' : 'transparent';
             document.getElementById('btn-mm').style.color        = u==='mm'  ? '#fff'    : '#555670';
             document.getElementById('btn-pol').style.background  = u==='pol' ? '#FF6B00' : 'transparent';
             document.getElementById('btn-pol').style.color       = u==='pol' ? '#fff'    : '#555670';
-            var qs = u==='pol' ? QS_POL : QS_MM;
-            document.getElementById('qs-diam').innerHTML = qs.map(function(v){return '<button onclick="setM(\'diam\','+v+')">'+v+'</button>';}).join('');
             calc();
         }
 
@@ -371,7 +409,11 @@
             calc();
         }
 
-        window.onload = function() { setUnit('mm'); };
+        window.onload = function() {
+            setUnit('mm');
+            document.getElementById('diam-pol').addEventListener('change', calc);
+            document.getElementById('comp').addEventListener('input', calc);
+        };
     </script>
 </body>
 </html>
