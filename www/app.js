@@ -16,12 +16,9 @@ var state = {
 };
 
 function parseValor(raw) {
-    // Remove tudo exceto digitos, ponto, virgula e barra
     var s = String(raw).replace(/[^0-9.,\/]/g, '').replace(',', '.').trim();
-    // Formato fracionario tipo 2.1/2 ou 1.3/4
     var mFrac = s.match(/^(\d+)[.](\d+)[\/](\d+)$/);
     if (mFrac) return parseInt(mFrac[1], 10) + parseInt(mFrac[2], 10) / parseInt(mFrac[3], 10);
-    // Fracao pura tipo 1/2 ou 3/4
     var mPure = s.match(/^(\d+)[\/](\d+)$/);
     if (mPure) return parseInt(mPure[1], 10) / parseInt(mPure[2], 10);
     return parseFloat(s) || 0;
@@ -67,21 +64,20 @@ function atualizarResultados() {
 }
 
 function atualizarUnidadeD() {
-    var u      = state.unidadeD;
-    var input  = document.getElementById('diametro');
-    var select = document.getElementById('diametro-pol');
-    var qs     = document.getElementById('qs-diametro');
-    var unitEl = document.getElementById('unit-diametro');
-    var btnMM  = document.getElementById('btn-unit-mm');
-    var btnPol = document.getElementById('btn-unit-pol');
+    var u       = state.unidadeD;
+    var wrapper = document.getElementById('diametro-mm-wrapper');
+    var select  = document.getElementById('diametro-pol');
+    var qs      = document.getElementById('qs-diametro');
+    var btnMM   = document.getElementById('btn-unit-mm');
+    var btnPol  = document.getElementById('btn-unit-pol');
 
     if (u === 'pol') {
-        if (input)  input.style.display  = 'none';
-        if (select) select.style.display = 'block';
-        if (qs)     qs.style.display     = 'none';
+        if (wrapper) wrapper.style.display = 'none';
+        if (select)  select.style.display  = 'block';
+        if (qs)      qs.style.display      = 'none';
     } else {
-        if (input)  input.style.display  = 'block';
-        if (select) { select.style.display = 'none'; select.value = ''; }
+        if (wrapper) wrapper.style.display = 'flex';
+        if (select)  { select.style.display = 'none'; select.value = ''; }
         if (qs) {
             qs.style.display = '';
             qs.innerHTML = QUICK_MM.map(function(v) {
@@ -90,7 +86,6 @@ function atualizarUnidadeD() {
         }
     }
 
-    if (unitEl) unitEl.textContent = u;
     if (btnMM)  btnMM.classList.toggle('active',  u === 'mm');
     if (btnPol) btnPol.classList.toggle('active', u === 'pol');
 }
@@ -117,9 +112,9 @@ window.setUnidade = function(u) {
 };
 
 window.limparTudo = function() {
+    state.unidadeD = 'mm';
+    atualizarUnidadeD();
     document.getElementById('diametro').value = '';
-    var sel = document.getElementById('diametro-pol');
-    if (sel) sel.value = '';
     document.getElementById('comprimento').value = '';
     state.servico = 'cromoCamada';
     window.setServico('cromoCamada');

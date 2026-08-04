@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CromCalc 2026 - v3</title>
+    <title>CromCalc 2026</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
@@ -26,52 +26,52 @@
 
         <main class="main-content">
             <section class="input-section">
-                <div class="section-label">📐 Dimensões da Peça</div>
+                <div class="section-label">&#128208; Dimensões da Peça</div>
                 <div class="input-grid">
                     <div class="input-group">
                         <div class="input-group-header">
-                            <label><span class="input-symbol">Ø</span> Diâmetro</label>
+                            <label><span class="input-symbol">&#216;</span> Diâmetro</label>
                             <div class="unit-toggle">
                                 <button id="btn-unit-mm"  class="unit-btn active" onclick="setUnidade('mm')">mm</button>
                                 <button id="btn-unit-pol" class="unit-btn"        onclick="setUnidade('pol')">pol</button>
                             </div>
                         </div>
-                        <div class="input-wrapper">
+                        <div class="input-wrapper" id="diametro-mm-wrapper">
                             <input type="text" inputmode="decimal" id="diametro" placeholder="0">
-                            <select id="diametro-pol" style="display:none">
-                                <option value="">-- Selecione --</option>
-                                <option value="0.25">1/4"</option>
-                                <option value="0.375">3/8"</option>
-                                <option value="0.5">1/2"</option>
-                                <option value="0.625">5/8"</option>
-                                <option value="0.75">3/4"</option>
-                                <option value="0.875">7/8"</option>
-                                <option value="1">1"</option>
-                                <option value="1.25">1.1/4"</option>
-                                <option value="1.5">1.1/2"</option>
-                                <option value="1.75">1.3/4"</option>
-                                <option value="2">2"</option>
-                                <option value="2.25">2.1/4"</option>
-                                <option value="2.5">2.1/2"</option>
-                                <option value="2.75">2.3/4"</option>
-                                <option value="3">3"</option>
-                                <option value="3.5">3.1/2"</option>
-                                <option value="4">4"</option>
-                                <option value="4.5">4.1/2"</option>
-                                <option value="5">5"</option>
-                                <option value="5.5">5.1/2"</option>
-                                <option value="6">6"</option>
-                                <option value="7">7"</option>
-                                <option value="8">8"</option>
-                                <option value="10">10"</option>
-                                <option value="12">12"</option>
-                            </select>
-                            <span class="input-unit" id="unit-diametro">mm</span>
+                            <span class="input-unit">mm</span>
                         </div>
+                        <select id="diametro-pol" style="display:none">
+                            <option value="">-- Selecione --</option>
+                            <option value="0.25">1/4"</option>
+                            <option value="0.375">3/8"</option>
+                            <option value="0.5">1/2"</option>
+                            <option value="0.625">5/8"</option>
+                            <option value="0.75">3/4"</option>
+                            <option value="0.875">7/8"</option>
+                            <option value="1">1"</option>
+                            <option value="1.25">1.1/4"</option>
+                            <option value="1.5">1.1/2"</option>
+                            <option value="1.75">1.3/4"</option>
+                            <option value="2">2"</option>
+                            <option value="2.25">2.1/4"</option>
+                            <option value="2.5">2.1/2"</option>
+                            <option value="2.75">2.3/4"</option>
+                            <option value="3">3"</option>
+                            <option value="3.5">3.1/2"</option>
+                            <option value="4">4"</option>
+                            <option value="4.5">4.1/2"</option>
+                            <option value="5">5"</option>
+                            <option value="5.5">5.1/2"</option>
+                            <option value="6">6"</option>
+                            <option value="7">7"</option>
+                            <option value="8">8"</option>
+                            <option value="10">10"</option>
+                            <option value="12">12"</option>
+                        </select>
                         <div class="quick-select" id="qs-diametro"></div>
                     </div>
                     <div class="input-group">
-                        <label><span class="input-symbol">ℓ</span> Comprimento</label>
+                        <label><span class="input-symbol">&#8467;</span> Comprimento</label>
                         <div class="input-wrapper">
                             <input type="text" inputmode="decimal" id="comprimento" placeholder="0">
                             <span class="input-unit">mm</span>
