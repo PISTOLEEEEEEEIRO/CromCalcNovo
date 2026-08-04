@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cromcalc-v4';
+const CACHE_NAME = 'cromcalc-v5';
 const ASSETS = [
     './',
     './index.html',
@@ -10,43 +10,43 @@ const ASSETS = [
     './megaflex-logo.png.jpeg'
 ];
 
-// Install — cache all assets
-self.addEventListener('install', (event) => {
+// Install — cache assets
+self.addEventListener('install', function(event) {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(CACHE_NAME).then(function(cache) {
             return cache.addAll(ASSETS);
         })
     );
     self.skipWaiting();
 });
 
-// Activate — clean old caches
-self.addEventListener('activate', (event) => {
+// Activate — remove old caches and take control immediately
+self.addEventListener('activate', function(event) {
     event.waitUntil(
-        caches.keys().then((keys) => {
+        caches.keys().then(function(keys) {
             return Promise.all(
-                keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+                keys.filter(function(key) { return key !== CACHE_NAME; })
+                    .map(function(key) { return caches.delete(key); })
             );
+        }).then(function() {
+            return self.clients.claim();
         })
     );
-    self.clients.claim();
 });
 
-// Fetch — cache first, then network
-self.addEventListener('fetch', (event) => {
+// Fetch — NETWORK FIRST, cache as fallback (offline only)
+self.addEventListener('fetch', function(event) {
     event.respondWith(
-        caches.match(event.request).then((cached) => {
-            return cached || fetch(event.request).then((response) => {
-                // Cache new resources
-                if (response.status === 200) {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                }
-                return response;
-            });
-        }).catch(() => {
-            // If both fail, return cached index
-            return caches.match('./index.html');
+        fetch(event.request).then(function(response) {
+            if (response.status === 200) {
+                var clone = response.clone();
+                caches.open(CACHE_NAME).then(function(cache) {
+                    cache.put(event.request, clone);
+                });
+            }
+            return response;
+        }).catch(function() {
+            return caches.match(event.request);
         })
     );
 });
