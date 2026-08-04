@@ -184,6 +184,36 @@ body {
     margin-bottom: 0;
 }
 
+#diametro-pol {
+    width: 100%;
+    height: 52px;
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0 14px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FF6B00' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+#diametro-pol:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+#diametro-pol option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
 .unit-toggle {
     display: flex;
     border: 1px solid var(--border-color);
